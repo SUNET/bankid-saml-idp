@@ -5,5 +5,4 @@ apt install -y maven
 mvn -version
 export DOCKER_REPO=local
 mvn clean install
-
-mvn -f bankid-idp/bankid-idp jib:dockerBuild 
+mvn -f bankid-idp jib:dockerBuild 
