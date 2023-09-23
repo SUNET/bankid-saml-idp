@@ -39,7 +39,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import lombok.Setter;
 import se.swedenconnect.bankid.idp.authn.BankIdAttributeProducer;
 import se.swedenconnect.bankid.idp.authn.BankIdAuthenticationProvider;
-import se.swedenconnect.bankid.idp.authn.api.SpInformationFactory;
+import se.swedenconnect.bankid.idp.authn.api.UiInformationProvider;
 import se.swedenconnect.bankid.idp.authn.error.ErrorhandlerFilter;
 import se.swedenconnect.bankid.idp.config.BankIdConfigurationProperties.RelyingPartyConfiguration;
 import se.swedenconnect.bankid.idp.rp.DefaultRelyingPartyRepository;
@@ -104,8 +104,7 @@ public class BankIdConfiguration {
         .authorizeHttpRequests((authorize) -> authorize
             .antMatchers(this.properties.getAuthn().getAuthnPath() + "/**").permitAll()
             .antMatchers("/images/**", "/logo.svg", "/error", "/assets/**", "/scripts/**", "/webjars/**", "/view/**",
-                "/api/**",
-                "/**/resume")
+                "/css/**", "/api/**", "/**/resume")
             .permitAll()
             .requestMatchers(EndpointRequest.toAnyEndpoint())
             .permitAll()
@@ -241,13 +240,13 @@ public class BankIdConfiguration {
   }
 
   /**
-   * Creates the bean for providing SP information to the frontend.
+   * Creates the bean for providing UI information to the frontend.
    *
-   * @return a {@link SpInformationFactory}
+   * @return a {@link UiInformationProvider}
    */
   @Bean
-  SpInformationFactory spInformationFactory() {
-    return new SpInformationFactory(this.properties.getUi().isShowSpMessage());
+  UiInformationProvider uiInformationProvider() {
+    return new UiInformationProvider(this.properties.getUi());
   }
 
   @Bean
