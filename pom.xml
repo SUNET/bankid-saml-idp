@@ -54,7 +54,7 @@
     <spring.boot.version>2.7.15</spring.boot.version>
     <spring.version>5.3.29</spring.version>
     <bc.version>1.76</bc.version>
-    <zxing.version>3.5.1</zxing.version>
+    <zxing.version>3.5.2</zxing.version>
   </properties>
 
   <repositories>
