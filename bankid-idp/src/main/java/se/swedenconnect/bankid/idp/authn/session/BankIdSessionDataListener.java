@@ -17,12 +17,11 @@ package se.swedenconnect.bankid.idp.authn.session;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import se.swedenconnect.bankid.idp.authn.context.PreviousDeviceSelection;
 import se.swedenconnect.bankid.idp.authn.events.AbortAuthEvent;
@@ -103,7 +102,7 @@ public class BankIdSessionDataListener {
 
     final BankIdSessionData previous =
         this.reader.loadSessionData(event.getRequest().getRequest()).getBankIdSessionData();
-    this.writer.save(event.getRequest().getRequest(), BankIdSessionData.of(previous, event.getCollectResponse()));
+    this.writer.save(event.getRequest().getRequest(), BankIdSessionData.of(previous, event.getCollectResponse(), event.getRequest().getQr()));
 
     if (event.getCollectResponse().getStatus().equals(CollectResponse.Status.COMPLETE)) {
       this.writer.save(event.getRequest().getRequest(), event.getCollectResponse());

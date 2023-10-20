@@ -138,7 +138,7 @@ public class BankIdSessionData implements Serializable {
    * @param response the {@link CollectResponse}
    * @return a {@link BankIdSessionData}
    */
-  public static BankIdSessionData of(final BankIdSessionData previous, final CollectResponse response) {
+  public static BankIdSessionData of(final BankIdSessionData previous, final CollectResponse response, boolean showQr) {
     return BankIdSessionData.builder()
         .autoStartToken(previous.getAutoStartToken())
         .qrStartToken(previous.getQrStartToken())
@@ -148,8 +148,8 @@ public class BankIdSessionData implements Serializable {
         .status(Optional.ofNullable(response.getProgressStatus()).orElse(previous.getStatus()))
         .startFailed(response.getErrorCode() == ErrorCode.START_FAILED)
         .sessionExpired(response.getErrorCode() == ErrorCode.EXPIRED_TRANSACTION)
-        .messageCode(StatusCodeFactory.statusCode(response, previous.getShowQr(), previous.getOperation()))
-        .showQr(previous.getShowQr())
+        .messageCode(StatusCodeFactory.statusCode(response, showQr, previous.getOperation()))
+        .showQr(showQr)
         .errorCode(response.getErrorCode())
         .operation(previous.getOperation())
         .build();

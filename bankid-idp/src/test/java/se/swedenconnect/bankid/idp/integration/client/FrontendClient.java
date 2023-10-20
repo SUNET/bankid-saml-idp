@@ -22,8 +22,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.servlet.ServletContext;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.Mockito;
@@ -41,7 +39,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -50,9 +47,11 @@ import org.springframework.web.util.UriBuilder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import jakarta.servlet.ServletContext;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import se.swedenconnect.bankid.idp.authn.api.ApiResponse;
+import se.swedenconnect.bankid.idp.authn.api.SelectedDeviceInformation;
 import se.swedenconnect.bankid.idp.integration.OpenSamlTestBase;
 import se.swedenconnect.bankid.idp.integration.TestSp;
 import se.swedenconnect.bankid.idp.integration.TestSpConstants;
@@ -75,6 +74,10 @@ public class FrontendClient {
   public Mono<ApiResponse> poll(boolean qr) {
     Consumer<UriBuilder> customizer = c -> c.queryParam("qr", qr);
     return exchangeApi(withPath(client.post(), "/idp/api/poll", customizer), ApiResponse.class);
+  }
+
+  public Mono<SelectedDeviceInformation> device() {
+    return exchangeApi(withPath(client.get(), "/idp/api/device", c -> {}), SelectedDeviceInformation.class);
   }
 
   public Mono<Void> cancelApi() {

@@ -20,10 +20,9 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
+import jakarta.servlet.http.HttpServletRequest;
 import reactor.core.publisher.Mono;
 import se.swedenconnect.bankid.idp.authn.api.ApiResponse;
 import se.swedenconnect.bankid.idp.authn.api.ApiResponseFactory;
@@ -85,7 +84,7 @@ public class BankIdService {
     return Optional.ofNullable(request.getState())
         .map(BankIdSessionState::getBankIdSessionData)
         .map(sessionData -> this.collect(request)
-            .map(c -> BankIdSessionData.of(sessionData, c))
+            .map(c -> BankIdSessionData.of(sessionData, c, request.getQr()))
             .flatMap(b -> this.reInitIfExpired(request, b))
             .map(b -> ApiResponseFactory.create(b, request.getRelyingPartyData().getClient().getQRGenerator(),
                 request.getQr()))
@@ -151,7 +150,7 @@ public class BankIdService {
         .flatMap(sessionData -> pollRequest.getRelyingPartyData().getClient().collect(sessionData.getOrderReference())
             .map(collectResponse -> {
               eventPublisher.collectResponse(pollRequest, collectResponse).publish();
-              return ApiResponseFactory.create(BankIdSessionData.of(sessionData, collectResponse),
+              return ApiResponseFactory.create(BankIdSessionData.of(sessionData, collectResponse, pollRequest.getQr()),
                   pollRequest.getRelyingPartyData().getClient().getQRGenerator(), pollRequest.getQr());
             }));
   }
@@ -210,7 +209,7 @@ public class BankIdService {
           .flatMap(updatedSessionData -> request.getRelyingPartyData().getClient().collect(updatedSessionData.getOrderReference())
               .map(collectResponse -> {
                 eventPublisher.collectResponse(request, collectResponse).publish();
-                return BankIdSessionData.of(updatedSessionData, collectResponse);
+                return BankIdSessionData.of(updatedSessionData, collectResponse, request.getQr());
               }));
     }
     else {

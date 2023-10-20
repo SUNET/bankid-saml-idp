@@ -17,10 +17,9 @@ package se.swedenconnect.bankid.idp.authn.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.mockito.Mockito;
 
+import jakarta.servlet.http.HttpServletRequest;
 import se.swedenconnect.bankid.idp.authn.DisplayText;
 import se.swedenconnect.bankid.idp.authn.context.BankIdContext;
 import se.swedenconnect.bankid.idp.authn.context.BankIdOperation;
@@ -83,7 +82,8 @@ public class BankIdResponseFixture {
   }
 
   public static BankIdSessionState update(BankIdSessionState state, CollectResponse response) {
-    BankIdSessionData data = BankIdSessionData.of(state.getBankIdSessionData(), response);
+    BankIdSessionData bankIdSessionData = state.getBankIdSessionData();
+    BankIdSessionData data = BankIdSessionData.of(bankIdSessionData, response, bankIdSessionData.getShowQr());
     state.pop();
     state.push(data);
     return state;
